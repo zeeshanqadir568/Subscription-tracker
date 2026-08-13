@@ -1,12 +1,15 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
-const FROM_ADDRESS =
-  process.env.EMAIL_FROM ?? "Subscription Tracker <onboarding@resend.dev>";
+const FROM_NAME = process.env.EMAIL_FROM_NAME ?? "Subscription Tracker";
 
-function getClient(): Resend | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return null;
-  return new Resend(apiKey);
+function getTransport() {
+  const user = process.env.GMAIL_USER;
+  const appPassword = process.env.GMAIL_APP_PASSWORD;
+  if (!user || !appPassword) return null;
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass: appPassword },
+  });
 }
 
 function resetPasswordHtml(resetUrl: string): string {
@@ -34,32 +37,28 @@ function resetPasswordHtml(resetUrl: string): string {
 }
 
 /**
- * Sends the password-reset link. Silently no-ops (logging instead) when
- * RESEND_API_KEY isn't configured, so local/dev setups without an email
- * provider don't hard-fail — the route layer still returns a generic
- * success response either way, to avoid leaking account existence.
+ * Sends the password-reset link via Gmail SMTP. Silently no-ops (logging
+ * instead) when GMAIL_USER/GMAIL_APP_PASSWORD aren't configured, so local
+ * dev setups without email credentials don't hard-fail — the route layer
+ * still returns a generic success response either way, to avoid leaking
+ * account existence.
  */
 export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string,
 ): Promise<void> {
-  const client = getClient();
-  if (!client) {
+  const transport = getTransport();
+  if (!transport) {
     console.warn(
-      `RESEND_API_KEY not set — skipping email. Reset link for ${to}: ${resetUrl}`,
+      `Gmail credentials not set — skipping email. Reset link for ${to}: ${resetUrl}`,
     );
     return;
   }
 
-  const { error } = await client.emails.send({
-    from: FROM_ADDRESS,
+  await transport.sendMail({
+    from: `"${FROM_NAME}" <${process.env.GMAIL_USER}>`,
     to,
     subject: "Reset your Subscription Tracker password",
     html: resetPasswordHtml(resetUrl),
   });
-
-  if (error) {
-    console.error("Failed to send password reset email:", error);
-    throw new Error("Failed to send reset email");
-  }
 }
