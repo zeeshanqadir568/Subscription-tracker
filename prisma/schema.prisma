@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String         @unique
+  // Null when the account was created via GitHub OAuth only (no password set).
+  passwordHash  String?
+  image         String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id              String       @id @default(cuid())
+  name            String
+  cost            Decimal      @db.Decimal(10, 2)
+  billingCycle    BillingCycle
+  nextRenewalDate DateTime
+  // Validated against a shared allow-list in Zod rather than a DB enum,
+  // so adding a category later doesn't require a migration.
+  category        String
+  notes           String?
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([userId])
+  @@index([userId, nextRenewalDate])
+}
