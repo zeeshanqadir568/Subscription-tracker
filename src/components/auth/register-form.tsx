@@ -46,6 +46,18 @@ export function RegisterForm() {
       const body = await response.json();
 
       if (!response.ok) {
+        if (body?.error?.code === "EMAIL_TAKEN") {
+          setError("email", {
+            message: "Already registered — sign in instead.",
+          });
+          toast.error("You already have an account with this email", {
+            action: {
+              label: "Sign in",
+              onClick: () => router.push("/login"),
+            },
+          });
+          return;
+        }
         if (body?.error?.fields) {
           for (const [field, message] of Object.entries<string>(
             body.error.fields,

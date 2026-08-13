@@ -13,15 +13,30 @@ enum BillingCycle {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String         @unique
+  id                  String               @id @default(cuid())
+  name                String?
+  email               String               @unique
   // Null when the account was created via GitHub OAuth only (no password set).
-  passwordHash  String?
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  subscriptions Subscription[]
+  passwordHash        String?
+  image               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  subscriptions       Subscription[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  // SHA-256 hash of the token emailed to the user — the raw token never
+  // touches the database, so a DB leak alone can't be used to reset a
+  // password.
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model Subscription {

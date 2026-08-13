@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthSessionProvider } from "@/components/layout/auth-session-provider";
@@ -15,10 +15,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl = process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Subscription Tracker",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Subscription Tracker",
+    template: "%s · Subscription Tracker",
+  },
   description:
     "Track recurring SaaS and cloud subscriptions, monitor your burn rate, and never miss a renewal.",
+  keywords: [
+    "subscription tracker",
+    "subscription management",
+    "recurring billing",
+    "burn rate",
+    "SaaS spend",
+  ],
+  openGraph: {
+    title: "Subscription Tracker",
+    description:
+      "Track recurring SaaS and cloud subscriptions, monitor your burn rate, and never miss a renewal.",
+    url: siteUrl,
+    siteName: "Subscription Tracker",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Subscription Tracker",
+    description:
+      "Track recurring SaaS and cloud subscriptions, monitor your burn rate, and never miss a renewal.",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f9f9f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d0d0d" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
