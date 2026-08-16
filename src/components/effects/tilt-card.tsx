@@ -11,9 +11,11 @@ import { cn } from "@/lib/utils";
 export function TiltCard({
   children,
   className,
+  style,
 }: {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -40,6 +42,7 @@ export function TiltCard({
       ref={ref}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      style={style}
       className={cn("transition-transform duration-300 ease-out will-change-transform", className)}
     >
       {children}

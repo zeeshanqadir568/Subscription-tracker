@@ -61,25 +61,34 @@ function SortIcon({
   );
 }
 
+const logoSizes = {
+  sm: { box: "size-8", icon: "size-4", text: "text-xs", rounded: "rounded-lg" },
+  lg: { box: "size-16", icon: "size-8", text: "text-2xl", rounded: "rounded-2xl" },
+};
+
 export function SubscriptionLogo({
   name,
   category,
+  size = "sm",
 }: {
   name: string;
   category: string;
+  size?: "sm" | "lg";
 }) {
   const brand = matchSubscriptionLogo(name);
+  const dimensions = logoSizes[size];
+  const depth = size === "lg" ? "shadow-lg" : "";
 
   if (brand) {
     return (
       <span
         aria-hidden
-        className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-black/5"
+        className={`flex ${dimensions.box} shrink-0 items-center justify-center ${dimensions.rounded} bg-white ring-1 ring-black/5 ${depth}`}
       >
         <svg
           role="img"
           viewBox="0 0 24 24"
-          className="size-4"
+          className={dimensions.icon}
           fill={`#${brand.hex}`}
         >
           <path d={brand.path} />
@@ -92,7 +101,7 @@ export function SubscriptionLogo({
   return (
     <span
       aria-hidden
-      className="flex size-8 shrink-0 items-center justify-center rounded-lg text-xs font-bold"
+      className={`flex ${dimensions.box} shrink-0 items-center justify-center ${dimensions.rounded} ${dimensions.text} font-bold ${depth}`}
       style={{
         background: `color-mix(in oklch, ${color} 16%, transparent)`,
         color,

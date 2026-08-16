@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { CategoryChart } from "@/components/dashboard/category-chart";
 import { FreeTrials } from "@/components/dashboard/free-trials";
+import { Highlights } from "@/components/dashboard/highlights";
 import { InsightsRow } from "@/components/dashboard/insights";
 import { SpendForecastChart } from "@/components/dashboard/spend-forecast-chart";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
@@ -234,6 +235,11 @@ export function SubscriptionsDashboard({
           Here&apos;s where your money is going.
         </p>
       </div>
+
+      <Highlights
+        paidSubscriptions={paidSubscriptions}
+        trialSubscriptions={trialSubscriptions}
+      />
 
       <section className="flex flex-col gap-5">
         <SummaryCards
