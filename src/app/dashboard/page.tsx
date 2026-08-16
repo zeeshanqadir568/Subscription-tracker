@@ -28,6 +28,7 @@ export default async function DashboardPage() {
       isFreeTrial: subscription.isFreeTrial,
       category: subscription.category,
       notes: subscription.notes,
+      createdAt: subscription.createdAt.toISOString(),
     }),
   );
 

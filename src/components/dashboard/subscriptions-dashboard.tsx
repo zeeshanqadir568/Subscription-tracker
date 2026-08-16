@@ -10,6 +10,7 @@ import { InsightsRow } from "@/components/dashboard/insights";
 import { SpendForecastChart } from "@/components/dashboard/spend-forecast-chart";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { UpcomingRenewals } from "@/components/dashboard/upcoming-renewals";
+import { Wallet } from "@/components/dashboard/wallet";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -249,6 +250,8 @@ export function SubscriptionsDashboard({
         />
         <InsightsRow subscriptions={paidSubscriptions} />
       </section>
+
+      <Wallet subscriptions={paidSubscriptions} />
 
       <section className="flex flex-col gap-5">
         <h2 className="text-xl font-semibold tracking-tight">Trends</h2>

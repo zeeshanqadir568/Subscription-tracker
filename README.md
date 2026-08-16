@@ -134,6 +134,17 @@ subscription pro-rates to *exactly* $10.00/mo, and summing many subscriptions
 never produces `0.1 + 0.2`-style rounding errors. See
 `src/lib/calculations.ts` and `tests/calculations.test.ts`.
 
+## Wallet (estimated total spend)
+
+The dashboard's Wallet card estimates how much you've spent in total across
+your active subscriptions, with a per-app breakdown you can expand. There's
+no real payment ledger, so the figure is an estimate: `getTotalSpentCents()`
+(`src/lib/calculations.ts`) counts one charge per billing period completed
+since the subscription's `createdAt`, including the initial charge at
+signup — it assumes every cycle since has been paid in full. Free trials are
+excluded (nothing's been charged yet), and deleted subscriptions aren't
+counted, since deletes are hard deletes with no retained history.
+
 ## Free trial tracking
 
 A subscription can be flagged as a free trial (`isFreeTrial` on the

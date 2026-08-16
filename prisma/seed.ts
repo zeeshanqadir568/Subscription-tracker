@@ -7,6 +7,7 @@ const prisma = new PrismaClient({ adapter });
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const daysFromNow = (days: number) => new Date(Date.now() + days * DAY_MS);
+const daysAgo = (days: number) => new Date(Date.now() - days * DAY_MS);
 
 async function main() {
   const passwordHash = await bcrypt.hash("password123", 10);
@@ -32,6 +33,7 @@ async function main() {
         billingCycle: "MONTHLY",
         category: "Dev Tools",
         nextRenewalDate: daysFromNow(3),
+        createdAt: daysAgo(340),
       },
       {
         userId: user.id,
@@ -40,6 +42,7 @@ async function main() {
         billingCycle: "MONTHLY",
         category: "Hosting & Infra",
         nextRenewalDate: daysFromNow(6),
+        createdAt: daysAgo(210),
       },
       {
         userId: user.id,
@@ -48,6 +51,7 @@ async function main() {
         billingCycle: "MONTHLY",
         category: "Hosting & Infra",
         nextRenewalDate: daysFromNow(-1),
+        createdAt: daysAgo(500),
       },
       {
         userId: user.id,
@@ -56,6 +60,7 @@ async function main() {
         billingCycle: "YEARLY",
         category: "Design",
         nextRenewalDate: daysFromNow(18),
+        createdAt: daysAgo(347),
       },
       {
         userId: user.id,
@@ -64,6 +69,7 @@ async function main() {
         billingCycle: "YEARLY",
         category: "Productivity",
         nextRenewalDate: daysFromNow(29),
+        createdAt: daysAgo(336),
       },
       {
         userId: user.id,
@@ -72,6 +78,7 @@ async function main() {
         billingCycle: "MONTHLY",
         category: "Marketing",
         nextRenewalDate: daysFromNow(45),
+        createdAt: daysAgo(75),
       },
       {
         userId: user.id,
@@ -80,6 +87,7 @@ async function main() {
         billingCycle: "MONTHLY",
         category: "Finance & Ops",
         nextRenewalDate: daysFromNow(12),
+        createdAt: daysAgo(140),
       },
       {
         userId: user.id,
@@ -88,6 +96,7 @@ async function main() {
         billingCycle: "YEARLY",
         category: "Communication",
         nextRenewalDate: daysFromNow(60),
+        createdAt: daysAgo(305),
       },
       {
         userId: user.id,

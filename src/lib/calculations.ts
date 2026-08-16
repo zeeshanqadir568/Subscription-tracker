@@ -2,6 +2,7 @@ import {
   addDays,
   addMonths,
   differenceInCalendarDays,
+  differenceInCalendarMonths,
   endOfMonth,
   isWithinInterval,
   startOfDay,
@@ -187,6 +188,30 @@ export function getDaysUntil(
   referenceDate: Date = new Date(),
 ): number {
   return differenceInCalendarDays(startOfDay(date), startOfDay(referenceDate));
+}
+
+interface SpendTrackedSubscription extends CostAndCycle {
+  createdAt: Date;
+}
+
+/**
+ * Estimated total charged for a subscription so far: one period's cost for
+ * every billing cycle completed since it was added, including the initial
+ * charge at signup. There's no real payment ledger, so this assumes billing
+ * started exactly on `createdAt` and every cycle since has been paid in
+ * full — an estimate, not a reconciled total.
+ */
+export function getTotalSpentCents(
+  subscription: SpendTrackedSubscription,
+  referenceDate: Date = new Date(),
+): number {
+  const periodMonths = subscription.billingCycle === "MONTHLY" ? 1 : 12;
+  const monthsElapsed = Math.max(
+    0,
+    differenceInCalendarMonths(referenceDate, subscription.createdAt),
+  );
+  const completedPeriods = Math.floor(monthsElapsed / periodMonths) + 1;
+  return completedPeriods * toCents(subscription.cost);
 }
 
 export function getUpcomingRenewals<T extends { nextRenewalDate: Date }>(

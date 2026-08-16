@@ -11,4 +11,6 @@ export interface SubscriptionClientDTO {
   isFreeTrial: boolean;
   category: string;
   notes: string | null;
+  /** When this subscription was added — used to estimate all-time spend. */
+  createdAt: string;
 }
