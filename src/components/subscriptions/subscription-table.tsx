@@ -61,7 +61,7 @@ function SortIcon({
   );
 }
 
-function SubscriptionLogo({
+export function SubscriptionLogo({
   name,
   category,
 }: {

@@ -45,6 +45,10 @@ model Subscription {
   cost            Decimal      @db.Decimal(10, 2)
   billingCycle    BillingCycle
   nextRenewalDate DateTime
+  // When true, `nextRenewalDate` is the date the free trial ends and the
+  // first real charge happens — `cost`/`billingCycle` describe that
+  // eventual charge, not money already being spent.
+  isFreeTrial     Boolean      @default(false)
   // Validated against a shared allow-list in Zod rather than a DB enum,
   // so adding a category later doesn't require a migration.
   category        String

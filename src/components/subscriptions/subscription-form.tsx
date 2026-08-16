@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { CATEGORIES } from "@/lib/categories";
 import {
@@ -25,6 +26,7 @@ export interface SubscriptionFormDefaults {
   cost: string;
   billingCycle: (typeof BILLING_CYCLES)[number];
   nextRenewalDate: string;
+  isFreeTrial: boolean;
   category: string;
   notes: string;
 }
@@ -34,6 +36,7 @@ const emptyDefaults: SubscriptionFormDefaults = {
   cost: "",
   billingCycle: "MONTHLY",
   nextRenewalDate: "",
+  isFreeTrial: false,
   category: CATEGORIES[0],
   notes: "",
 };
@@ -77,6 +80,7 @@ export function SubscriptionForm({
 
   const billingCycle = watch("billingCycle");
   const category = watch("category");
+  const isFreeTrial = watch("isFreeTrial");
 
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-4" noValidate>
@@ -88,9 +92,27 @@ export function SubscriptionForm({
         )}
       </div>
 
+      <div className="flex items-center justify-between gap-4 rounded-lg border p-3">
+        <div className="flex flex-col gap-0.5">
+          <Label htmlFor="isFreeTrial">Free trial</Label>
+          <p className="text-xs text-muted-foreground">
+            Track a trial and get warned before it converts to a paid plan.
+          </p>
+        </div>
+        <Switch
+          id="isFreeTrial"
+          checked={isFreeTrial}
+          onCheckedChange={(checked) =>
+            setValue("isFreeTrial", checked, { shouldValidate: true })
+          }
+        />
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="cost">Cost (USD)</Label>
+          <Label htmlFor="cost">
+            {isFreeTrial ? "Cost after trial (USD)" : "Cost (USD)"}
+          </Label>
           <Input
             id="cost"
             type="number"
@@ -161,7 +183,9 @@ export function SubscriptionForm({
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="nextRenewalDate">Next renewal</Label>
+          <Label htmlFor="nextRenewalDate">
+            {isFreeTrial ? "Trial ends" : "Next renewal"}
+          </Label>
           <Input
             id="nextRenewalDate"
             type="date"
