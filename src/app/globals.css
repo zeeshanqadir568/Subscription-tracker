@@ -322,6 +322,28 @@
       100% 100%;
   }
 
+  .highlight-card {
+    --glow: var(--primary);
+    box-shadow: 0 0 0 1.5px color-mix(in oklch, var(--glow) 35%, transparent);
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.3s ease;
+  }
+  .highlight-card:hover {
+    box-shadow:
+      0 0 0 1.5px color-mix(in oklch, var(--glow) 55%, transparent),
+      0 24px 48px -24px color-mix(in oklch, var(--glow) 60%, transparent);
+    transform: translateY(-4px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .highlight-card {
+      transition: none;
+    }
+    .highlight-card:hover {
+      transform: none;
+    }
+  }
+
   .text-gradient-brand {
     background-image: linear-gradient(
       90deg,
