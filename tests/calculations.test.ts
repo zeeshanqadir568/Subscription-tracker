@@ -4,8 +4,10 @@ import {
   calculateBurnRate,
   fromCents,
   getCategoryBreakdown,
+  getDaysUntil,
   getMonthlyEquivalentCents,
   getSpendForecast,
+  getTrialUrgency,
   getUpcomingRenewals,
   getYearlyEquivalentCents,
   toCents,
@@ -198,5 +200,50 @@ describe("getUpcomingRenewals", () => {
     );
     expect(result.dueWithin7Days).toHaveLength(0);
     expect(result.dueWithin30Days).toHaveLength(0);
+  });
+});
+
+describe("getTrialUrgency", () => {
+  it("is green at exactly 10 days left", () => {
+    expect(getTrialUrgency(10)).toBe("green");
+  });
+
+  it("is green for anything further out than 10 days", () => {
+    expect(getTrialUrgency(30)).toBe("green");
+  });
+
+  it("is yellow at exactly 9 days left", () => {
+    expect(getTrialUrgency(9)).toBe("yellow");
+  });
+
+  it("is yellow at exactly 4 days left", () => {
+    expect(getTrialUrgency(4)).toBe("yellow");
+  });
+
+  it("is red at exactly 3 days left", () => {
+    expect(getTrialUrgency(3)).toBe("red");
+  });
+
+  it("is red once the trial has already ended", () => {
+    expect(getTrialUrgency(-1)).toBe("red");
+  });
+});
+
+describe("getDaysUntil", () => {
+  it("returns 0 for the same calendar day", () => {
+    const day = new Date("2026-08-13T18:00:00Z");
+    expect(getDaysUntil(day, new Date("2026-08-13T02:00:00Z"))).toBe(0);
+  });
+
+  it("returns a positive count for a future date", () => {
+    const reference = new Date("2026-08-13T12:00:00Z");
+    expect(getDaysUntil(new Date("2026-08-20T00:00:00Z"), reference)).toBe(7);
+  });
+
+  it("returns a negative count for a past date", () => {
+    const reference = new Date("2026-08-13T12:00:00Z");
+    expect(getDaysUntil(new Date("2026-08-10T00:00:00Z"), reference)).toBe(
+      -3,
+    );
   });
 });

@@ -1,6 +1,7 @@
 import {
   addDays,
   addMonths,
+  differenceInCalendarDays,
   endOfMonth,
   isWithinInterval,
   startOfDay,
@@ -167,6 +168,25 @@ export function getSpendForecast(
 
     return { date: monthStart, totalCents };
   });
+}
+
+export type TrialUrgency = "green" | "yellow" | "red";
+
+/**
+ * green: 10+ days left · yellow: 4-9 days left (about a week) · red: 3 days
+ * or fewer, including a trial that's already ended and about to bill.
+ */
+export function getTrialUrgency(daysLeft: number): TrialUrgency {
+  if (daysLeft >= 10) return "green";
+  if (daysLeft >= 4) return "yellow";
+  return "red";
+}
+
+export function getDaysUntil(
+  date: Date,
+  referenceDate: Date = new Date(),
+): number {
+  return differenceInCalendarDays(startOfDay(date), startOfDay(referenceDate));
 }
 
 export function getUpcomingRenewals<T extends { nextRenewalDate: Date }>(

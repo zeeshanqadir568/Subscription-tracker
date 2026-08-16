@@ -7,6 +7,8 @@ export interface SubscriptionClientDTO {
   cost: number;
   billingCycle: BillingCycle;
   nextRenewalDate: string;
+  /** True while on a free trial — nextRenewalDate is the day billing starts. */
+  isFreeTrial: boolean;
   category: string;
   notes: string | null;
 }

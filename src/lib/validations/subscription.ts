@@ -17,6 +17,9 @@ export const subscriptionSchema = z.object({
     message: "Select a billing cycle",
   }),
   nextRenewalDate: z.coerce.date({ message: "Enter a valid date" }),
+  // When true, nextRenewalDate is the trial end date and cost/billingCycle
+  // describe the charge that kicks in once it ends.
+  isFreeTrial: z.boolean().default(false),
   category: z.enum(CATEGORIES, { message: "Select a category" }),
   notes: z
     .string()

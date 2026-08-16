@@ -89,10 +89,37 @@ async function main() {
         category: "Communication",
         nextRenewalDate: daysFromNow(60),
       },
+      {
+        userId: user.id,
+        name: "Linear",
+        cost: 8,
+        billingCycle: "MONTHLY",
+        category: "Productivity",
+        isFreeTrial: true,
+        nextRenewalDate: daysFromNow(14),
+      },
+      {
+        userId: user.id,
+        name: "Framer",
+        cost: 15,
+        billingCycle: "MONTHLY",
+        category: "Design",
+        isFreeTrial: true,
+        nextRenewalDate: daysFromNow(6),
+      },
+      {
+        userId: user.id,
+        name: "Datadog",
+        cost: 31,
+        billingCycle: "MONTHLY",
+        category: "Hosting & Infra",
+        isFreeTrial: true,
+        nextRenewalDate: daysFromNow(2),
+      },
     ],
   });
 
-  console.log(`Seeded demo user (${user.email}) with 8 sample subscriptions.`);
+  console.log(`Seeded demo user (${user.email}) with 8 subscriptions and 3 free trials.`);
 }
 
 main()

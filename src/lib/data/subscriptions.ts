@@ -15,6 +15,7 @@ export interface SubscriptionDTO {
   cost: number;
   billingCycle: BillingCycle;
   nextRenewalDate: Date;
+  isFreeTrial: boolean;
   category: string;
   notes: string | null;
   createdAt: Date;
@@ -27,6 +28,7 @@ interface SubscriptionRow {
   cost: { toNumber: () => number };
   billingCycle: string;
   nextRenewalDate: Date;
+  isFreeTrial: boolean;
   category: string;
   notes: string | null;
   createdAt: Date;
@@ -40,6 +42,7 @@ function toDTO(row: SubscriptionRow): SubscriptionDTO {
     cost: row.cost.toNumber(),
     billingCycle: row.billingCycle as BillingCycle,
     nextRenewalDate: row.nextRenewalDate,
+    isFreeTrial: row.isFreeTrial,
     category: row.category,
     notes: row.notes,
     createdAt: row.createdAt,
@@ -84,6 +87,7 @@ export async function createSubscription(
       cost: input.cost,
       billingCycle: input.billingCycle,
       nextRenewalDate: input.nextRenewalDate,
+      isFreeTrial: input.isFreeTrial,
       category: input.category,
       notes: input.notes || null,
     },
@@ -109,6 +113,7 @@ export async function updateSubscription(
       cost: input.cost,
       billingCycle: input.billingCycle,
       nextRenewalDate: input.nextRenewalDate,
+      isFreeTrial: input.isFreeTrial,
       category: input.category,
       notes: input.notes || null,
     },

@@ -25,6 +25,7 @@ export default async function DashboardPage() {
       cost: subscription.cost,
       billingCycle: subscription.billingCycle,
       nextRenewalDate: subscription.nextRenewalDate.toISOString(),
+      isFreeTrial: subscription.isFreeTrial,
       category: subscription.category,
       notes: subscription.notes,
     }),

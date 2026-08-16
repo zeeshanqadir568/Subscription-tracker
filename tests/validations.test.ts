@@ -64,6 +64,19 @@ describe("subscriptionSchema", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  it("defaults isFreeTrial to false when omitted", () => {
+    const result = subscriptionSchema.safeParse(validSubscription);
+    expect(result.success && result.data.isFreeTrial).toBe(false);
+  });
+
+  it("accepts an explicit isFreeTrial value", () => {
+    const result = subscriptionSchema.safeParse({
+      ...validSubscription,
+      isFreeTrial: true,
+    });
+    expect(result.success && result.data.isFreeTrial).toBe(true);
+  });
 });
 
 describe("registerSchema", () => {

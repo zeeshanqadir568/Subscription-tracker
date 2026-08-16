@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { CategoryChart } from "@/components/dashboard/category-chart";
+import { FreeTrials } from "@/components/dashboard/free-trials";
 import { InsightsRow } from "@/components/dashboard/insights";
 import { SpendForecastChart } from "@/components/dashboard/spend-forecast-chart";
 import { SummaryCards } from "@/components/dashboard/summary-cards";
@@ -38,6 +39,7 @@ function toFormDefaults(
     cost: String(subscription.cost),
     billingCycle: subscription.billingCycle,
     nextRenewalDate: subscription.nextRenewalDate.slice(0, 10),
+    isFreeTrial: subscription.isFreeTrial,
     category: subscription.category,
     notes: subscription.notes ?? "",
   };
@@ -85,28 +87,39 @@ export function SubscriptionsDashboard({
     useState<SubscriptionClientDTO | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const burnRate = useMemo(
-    () => calculateBurnRate(subscriptions),
+  // Free trials aren't costing anything yet, so they're kept out of every
+  // spend calculation below and surfaced in their own section instead.
+  const paidSubscriptions = useMemo(
+    () => subscriptions.filter((s) => !s.isFreeTrial),
     [subscriptions],
   );
-  const categoryBreakdown = useMemo(
-    () => getCategoryBreakdown(subscriptions),
+  const trialSubscriptions = useMemo(
+    () => subscriptions.filter((s) => s.isFreeTrial),
     [subscriptions],
+  );
+
+  const burnRate = useMemo(
+    () => calculateBurnRate(paidSubscriptions),
+    [paidSubscriptions],
+  );
+  const categoryBreakdown = useMemo(
+    () => getCategoryBreakdown(paidSubscriptions),
+    [paidSubscriptions],
   );
   const forecast = useMemo(
     () =>
       getSpendForecast(
-        subscriptions.map((s) => ({
+        paidSubscriptions.map((s) => ({
           ...s,
           nextRenewalDate: new Date(s.nextRenewalDate),
         })),
         6,
       ),
-    [subscriptions],
+    [paidSubscriptions],
   );
 
   const { dueWithin7Days, dueWithin30Days } = useMemo(() => {
-    const withDates = subscriptions.map((subscription) => ({
+    const withDates = paidSubscriptions.map((subscription) => ({
       ...subscription,
       nextRenewalDate: new Date(subscription.nextRenewalDate),
     }));
@@ -121,7 +134,7 @@ export function SubscriptionsDashboard({
         nextRenewalDate: s.nextRenewalDate.toISOString(),
       })),
     };
-  }, [subscriptions]);
+  }, [paidSubscriptions]);
 
   function openCreateForm() {
     setEditingSubscription(null);
@@ -228,7 +241,7 @@ export function SubscriptionsDashboard({
           totalYearlyCents={burnRate.totalYearlyCents}
           activeCount={burnRate.activeCount}
         />
-        <InsightsRow subscriptions={subscriptions} />
+        <InsightsRow subscriptions={paidSubscriptions} />
       </section>
 
       <section className="flex flex-col gap-5">
@@ -253,7 +266,24 @@ export function SubscriptionsDashboard({
           </Button>
         </div>
         <SubscriptionTable
-          subscriptions={subscriptions}
+          subscriptions={paidSubscriptions}
+          onEdit={openEditForm}
+          onDelete={setDeletingSubscription}
+        />
+      </section>
+
+      <section className="animate-in fade-in slide-in-from-bottom-2 fill-mode-both flex flex-col gap-5 delay-300 duration-500">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-xl font-semibold tracking-tight">
+            Free Trials
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Services you&apos;re trying for free — see how many days you have
+            before they start charging you.
+          </p>
+        </div>
+        <FreeTrials
+          subscriptions={trialSubscriptions}
           onEdit={openEditForm}
           onDelete={setDeletingSubscription}
         />
