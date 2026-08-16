@@ -7,6 +7,7 @@ import {
   getDaysUntil,
   getMonthlyEquivalentCents,
   getSpendForecast,
+  getTotalSpentCents,
   getTrialUrgency,
   getUpcomingRenewals,
   getYearlyEquivalentCents,
@@ -226,6 +227,55 @@ describe("getTrialUrgency", () => {
 
   it("is red once the trial has already ended", () => {
     expect(getTrialUrgency(-1)).toBe("red");
+  });
+});
+
+describe("getTotalSpentCents", () => {
+  it("counts the initial charge even on the day it was added", () => {
+    const reference = new Date("2026-08-13T12:00:00Z");
+    const spent = getTotalSpentCents(
+      { cost: 10, billingCycle: "MONTHLY", createdAt: reference },
+      reference,
+    );
+    expect(spent).toBe(1000);
+  });
+
+  it("adds one more monthly charge per full month elapsed", () => {
+    const spent = getTotalSpentCents(
+      {
+        cost: 10,
+        billingCycle: "MONTHLY",
+        createdAt: new Date("2026-05-13T00:00:00Z"),
+      },
+      new Date("2026-08-13T00:00:00Z"),
+    );
+    // May, Jun, Jul, Aug charges = 4
+    expect(spent).toBe(4000);
+  });
+
+  it("only charges a yearly subscription once per 12 elapsed months", () => {
+    const spent = getTotalSpentCents(
+      {
+        cost: 120,
+        billingCycle: "YEARLY",
+        createdAt: new Date("2025-08-13T00:00:00Z"),
+      },
+      new Date("2026-08-13T00:00:00Z"),
+    );
+    // Exactly one year elapsed -> 2 charges (signup + renewal)
+    expect(spent).toBe(24000);
+  });
+
+  it("never counts a partial period as a future charge", () => {
+    const spent = getTotalSpentCents(
+      {
+        cost: 120,
+        billingCycle: "YEARLY",
+        createdAt: new Date("2026-01-01T00:00:00Z"),
+      },
+      new Date("2026-08-13T00:00:00Z"),
+    );
+    expect(spent).toBe(12000);
   });
 });
 
