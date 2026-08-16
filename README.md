@@ -4,7 +4,9 @@ A SaaS subscription and cloud-cost tracker. Track recurring SaaS/cloud
 subscriptions, see an accurate monthly/annual burn rate (annual costs are
 pro-rated to a monthly equivalent), view spend by category, and get warned
 about renewals coming up in the next 7 and 30 days — so nothing renews as a
-surprise.
+surprise. Free trials can be tracked separately from paid subscriptions, with
+a color-coded warning as the trial's end date (and first real charge)
+approaches.
 
 ## Tech stack
 
@@ -109,7 +111,7 @@ src/
   components/
     ui/                  # shadcn/ui primitives
     auth/                # Login/register forms
-    dashboard/            # Summary cards, category chart, renewals
+    dashboard/            # Summary cards, category chart, renewals, free trials
     subscriptions/         # Subscription form, table, delete dialog
     layout/                # Navbar, session provider
   lib/
@@ -131,6 +133,22 @@ happens in **integer cents** to avoid floating-point drift: a $120/yr
 subscription pro-rates to *exactly* $10.00/mo, and summing many subscriptions
 never produces `0.1 + 0.2`-style rounding errors. See
 `src/lib/calculations.ts` and `tests/calculations.test.ts`.
+
+## Free trial tracking
+
+A subscription can be flagged as a free trial (`isFreeTrial` on the
+`Subscription` model). This changes how it's treated throughout the app:
+
+- The form's "Cost" and "Next renewal" fields relabel to "Cost after trial"
+  and "Trial ends" — the date entered is when the trial converts to a paid
+  charge, not a renewal of an existing charge.
+- Trial subscriptions are excluded from every spend calculation (burn rate,
+  category breakdown, spend forecast, upcoming-renewals list, insights) since
+  they aren't costing anything yet.
+- They're shown in their own "Free Trials" dashboard section instead, with a
+  color-coded urgency badge based on days left before the trial ends: green
+  (10+ days), yellow (4–9 days), red (3 days or fewer, including trials that
+  have already converted). See `getTrialUrgency()` in `src/lib/calculations.ts`.
 
 ## Ownership enforcement
 
