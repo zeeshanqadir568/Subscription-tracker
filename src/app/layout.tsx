@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { AuthSessionProvider } from "@/components/layout/auth-session-provider";
 import { CursorGlow } from "@/components/effects/cursor-glow";
@@ -39,7 +40,7 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Subscription Tracker",
     type: "website",
-  },
+    },
   twitter: {
     card: "summary_large_image",
     title: "Subscription Tracker",
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <Toaster />
         </AuthSessionProvider>
+        <Analytics />
       </body>
     </html>
   );
