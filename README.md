@@ -8,6 +8,12 @@ surprise. Free trials can be tracked separately from paid subscriptions, with
 a color-coded warning as the trial's end date (and first real charge)
 approaches.
 
+## Screenshots
+
+| Sign in | Dashboard | Spend trends |
+|---|---|---|
+| ![Sign in](docs/screenshots/sub-tracker-1-login.png) | ![Dashboard](docs/screenshots/sub-tracker-2-dashboard.png) | ![Trends](docs/screenshots/sub-tracker-4-trends.png) |
+
 ## Tech stack
 
 - **Next.js 16** (App Router) + React 19 + TypeScript
