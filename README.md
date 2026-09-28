@@ -1,5 +1,7 @@
 # Subscription Tracker
 
+[![CI](https://github.com/zeeshanqadir568/Subscription-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/zeeshanqadir568/Subscription-tracker/actions/workflows/ci.yml)
+
 A SaaS subscription and cloud-cost tracker. Track recurring SaaS/cloud
 subscriptions, see an accurate monthly/annual burn rate (annual costs are
 pro-rated to a monthly equivalent), view spend by category, and get warned
